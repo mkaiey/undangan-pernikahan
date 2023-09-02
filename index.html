@@ -37,7 +37,7 @@
       class="hero w-100 h-100 p-3 mx-auto text-center d-flex justify-content-center align-items-center text-white"
     >
       <main>
-        <h4>Kepada Bapak/Ibu/Saudara/i</h4>
+        <h4>Kepada <span>Bapak/Ibu/Saudara/i, </span></h4>
         <h1>Surti & Tejo</h1>
         <p>Akan melangsungkan resepsi pernikahan dalam:</p>
         <div class="simply-countdown"></div>
@@ -174,13 +174,25 @@
               Jl. Sultan M. Mansyur No.400, Bukit Lama, Kec. Ilir Barat I, Kota
               Palembang
             </p>
-            <a
+
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d127499.1084620694!2d104.6456207!3d-3.0008981!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e3b9e21f79ff667%3A0x8a9b77c07a976671!2sGraha%20Darusalam!5e0!3m2!1sid!2sid!4v1693611441570!5m2!1sid!2sid"
+              width="60%"
+              height="150"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+
+            <!-- <a
               href="https://goo.gl/maps/4AzxzuAT3tHtkPoQ8"
               target="_blank"
               class="btn btn-light btn-sm my-3"
-              >Peta Lokasi Acara</a
-            >
-            <p class="description">
+              >Klik untuk membuka peta</a
+            > -->
+
+            <p class="description mt-2">
               Mohon untuk selalu mengecek jadwal dan tempat acara yang tertulis
               di undangan. Bilamana ketika sudah tiba dilokasi tetapi tidak ada
               tanda-tanda sedang dilangsungkan pernikahan. Boleh jadi itu karena
@@ -555,8 +567,8 @@
             <h2>Kirim Cinderamata</h2>
             <p>
               Apapun bentuk hadiah/cinderamata dari Bapak/ibu/saudara/i untuk
-              kami dan keluarga, yakinlah akan sangat kami hargai
-              sebagai tanda kasih dan semoga menjadi berkah bagi kita semua.
+              kami dan keluarga, yakinlah akan sangat kami hargai sebagai tanda
+              kasih dan semoga menjadi berkah bagi kita semua.
             </p>
           </div>
         </div>
@@ -628,6 +640,18 @@
     </footer>
     <!-- footer section end -->
 
+    <!-- lagu pengantar start -->
+    <div id="audio-container">
+      <audio id="song" autoplay loop>
+        <source src="audio/loveuntildeath.mp3" type="audio/mp3" />
+      </audio>
+
+      <div class="audio-icon-wrapper" style="display: none">
+        <i class="bi bi-disc"></i>
+      </div>
+    </div>
+    <!-- lagu pengantar end -->
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
@@ -687,6 +711,10 @@
     <!-- script disable scrolling -->
     <script>
       const rootElement = document.querySelector(":root");
+      const audioIconWrapper = document.querySelector(".audio-icon-wrapper");
+      const audioIcon = document.querySelector(".audio-icon-wrapper i");
+      const song = document.querySelector("#song");
+      let isPlaying = false;
 
       function disableScroll() {
         scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -702,12 +730,35 @@
       function enableScroll() {
         window.onscroll = function () {};
         rootElement.style.scrollBehavior = "smooth";
-        localStorage.setItem("opened", "true");
+        // localStorage.setItem("opened", "true");
+        playAudio();
       }
 
-      if (!localStorage.getItem("opened")) {
-        disableScroll();
+      function playAudio() {
+        song.volume = 0.5;
+        audioIconWrapper.style.display = "flex";
+        song.play();
+        isPlaying = true;
       }
+
+      audioIconWrapper.onclick = function () {
+        if (isPlaying) {
+          song.pause();
+          audioIcon.classList.remove("bi-disc");
+          audioIcon.classList.add("bi-pause-circle");
+        } else {
+          song.play();
+          audioIcon.classList.add("bi-disc");
+          audioIcon.classList.remove("bi-pause-circle");
+        }
+
+        isPlaying = !isPlaying;
+      };
+
+      // if (!localStorage.getItem("opened")) {
+      //   disableScroll();
+      // }
+      disableScroll();
     </script>
 
     <!-- script untuk form konfirmasi -->
@@ -726,6 +777,19 @@
           });
         });
       });
+    </script>
+
+    <!-- script tag url nama penerima undangan -->
+    <!-- misal: http://127.0.0.1:5500/index.html?p=Bpk.&n=Selamet Sentosa  -->
+    <!-- tertulis: Kepada Bpk. Selamet Sentosa -->
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const nama = urlParams.get("n") || "";
+      const pronoun = urlParams.get("p") || "Bapak/Ibu/Saudara/i";
+      const namaContainer = document.querySelector(".hero h4 span");
+      namaContainer.innerText = `${pronoun} ${nama},`.replace(/ ,$/, ",");
+
+      document.querySelector("#nama").value = nama;
     </script>
   </body>
 </html>
